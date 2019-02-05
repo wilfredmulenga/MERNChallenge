@@ -12,6 +12,6 @@ install the dependencies
 If you do not have nodemon, you can install it globally
 `npm i nodemon -g`
 
-##Run Scripts
+## Run Scripts
 `yarn dev`
 
