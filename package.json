@@ -9,10 +9,12 @@
   },
   "author": "Github: @WillzMu",
   "license": "ISC",
+  "repository": "https://github.com/WillzMu/MERNChallenge",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongodb": "^3.1.13",
+    "node-sass": "^4.11.0",
     "nodemon": "^1.18.9"
   },
   "devDependencies": {
