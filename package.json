@@ -1,0 +1,21 @@
+{
+  "name": "mernchallenge",
+  "version": "1.0.0",
+  "description": "creating a project that uses MERN(Mongo Express React and Node)",
+  "scripts": {
+    "client": "cd client && yarn start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+  },
+  "author": "Github: @WillzMu",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.13",
+    "nodemon": "^1.18.9"
+  },
+  "devDependencies": {
+    "concurrently": "^4.0.1"
+  }
+}
