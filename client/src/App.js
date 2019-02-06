@@ -6,22 +6,35 @@ class App extends Component {
     super(props)
     this.textInput = React.createRef();
     this.state={
-      value:'',
+      input:'',
       error : '',
-      data : ''
+      data : '',
+      searchResult: []
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getData = this.getData.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+   
+  }
+
+
+  componentDidMount(){
     this.getData()
   }
+
+  handleSubmit = ()=>{
+    fetch(`http://localhost:5000/search/?input=${this.state.input}`)
+    .then(data => data.json())
+      .then(res =>
+         this.setState({
+        searchResult : res.data.key.toString()
+      })
+      );}
 
   getData=()=>{
     console.log('getting data')
     fetch("http://localhost:5000/")
     .then(data => data.json())
-      .then(res => this.setState({
-        data: res.data
-      }));
   }
 
   handleInputChange = (e)=>{
@@ -45,7 +58,7 @@ class App extends Component {
     }else{
       this.textInput.current.style.backgroundColor = null 
       this.setState({
-        value : input,
+        input : input,
         error : ''
       })
     }
@@ -60,16 +73,16 @@ class App extends Component {
               textAlign: 'center', padding: 10
             }}>
             <div>
-          <p>{this.state.value}</p>
+          <p>{this.state.input}</p>
           </div>
-        <input id='numbers' style={{width:100}}  onChange={this.handleInputChange} value={this.state.value} required
+        <input id='numbers' style={{width:100}}  onChange={this.handleInputChange} value={this.state.input} required
          pattern="^[0-9]+$" min='000' max='999'  ref={this.textInput}
         ></input>
         <p>{this.state.error}</p>
        <div style={{marginTop:30}}>
-       <button>Search</button>
+       <button onClick={this.handleSubmit}>Search</button>
        </div>
-        {(this.state.data!=='')?<p>{this.state.data}</p>:null}
+        {(this.state.searchResult!=='')?<p>Search Results: {this.state.searchResult}</p>:null}
         </div>
       </div>
     );

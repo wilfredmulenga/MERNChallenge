@@ -2,8 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 5000;
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,6 +25,9 @@ db.once('open', function() {
   console.log('connected')
  
 });
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 var pmSchema = new mongoose.Schema({
     key: [String]
   });
@@ -34,8 +36,21 @@ var pmSchema = new mongoose.Schema({
     primeNumbers.find({}, function(err, data){
    if(err)
     res.send(err)
-    res.json(data)
+    res.json({datatype: typeof data,data:data})
 })
+   })
+
+   app.get('/search',(req,res)=>{
+      var input = req.query.input;
+      var regexp = new RegExp(`${input}`)
+      primeNumbers.findOne({ "key" : { $regex: regexp } },
+          function (err, data) {
+                 if (err) 
+                 res.send(err)
+                 res.json({length:data.length ,data:data})
+
+   });
+   console.log(input)
    })
 
 // fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
@@ -44,7 +59,7 @@ var pmSchema = new mongoose.Schema({
 //     let splitted = data.toString().split("\n");
 //     for (let i = 0; i<splitted.length-2; i++) {
 //        let splitline = splitted[i].split(':')
-//         obj.push({[splitline[0]] : splitline[1].split(' ',11).slice(1)});
+//         obj.push({ "key" : splitline[1].split(' ',11).slice(1)});
 //     }
 //     console.log(obj);
 //     //insert prime numbers into collection
