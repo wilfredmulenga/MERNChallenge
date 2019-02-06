@@ -18,11 +18,22 @@ class App extends Component {
 
   handleInputChange = (e)=>{
    let input= e.target.value
-    if(input.length>3){
+   var inpuLetters = /[a-zA-Z]+/;
+   let inputSpecialCharacters = /\W/;
+   let inputNumbers = /\d+/
+    if(input.length>3 && inputNumbers.test(input)){
      this.textInput.current.style.backgroundColor = 'red'
      this.setState({
        error: 'max number is of digits is 3'
      })
+    }else if(inpuLetters.test(input)){
+      this.setState({
+        error: 'sorry, letters are not allowed. Please input numbers only'
+      })
+    }else if(inputSpecialCharacters.test(input)){
+      this.setState({
+        error: 'sorry, special characters are not allowed. Please input numbers only'
+      })
     }else{
       this.textInput.current.style.backgroundColor = null 
       this.setState({

@@ -20,23 +20,23 @@ var pmSchema = new mongoose.Schema({
   var primeNumbers = mongoose.model('primeNumbers', pmSchema);
   
  
-fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
-    if(err) throw err;
-    let obj = [];
-    let splitted = data.toString().split("\n");
-    for (let i = 0; i<splitted.length-2; i++) {
-       let splitline = splitted[i].split(':')
-        obj.push({[splitline[0]] : splitline[1].split(' ',11).slice(1)});
-    }
-    //console.log(obj);
-    //insert prime numbers into collection
-    primeNumbers.collection.insertMany(obj)
-});
+// fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
+//     if(err) throw err;
+//     let obj = [];
+//     let splitted = data.toString().split("\n");
+//     for (let i = 0; i<splitted.length-2; i++) {
+//        let splitline = splitted[i].split(':')
+//         obj.push({[splitline[0]] : splitline[1].split(' ',11).slice(1)});
+//     }
+//     console.log(obj);
+//     insert prime numbers into collection
+//     primeNumbers.collection.insertMany(obj)
+// });
 
    //primeNumbers is the collection
-   primeNumbers.find(function (err, pm) {
-    if (err) return console.error(err);
-    console.log(pm);
-  })
+//    primeNumbers.find(function (err, pm) {
+//     if (err) return console.error(err);
+//     console.log(pm);
+//   })
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
