@@ -43,13 +43,25 @@ var pmSchema = new mongoose.Schema({
    app.get('/search',(req,res)=>{
       var input = req.query.input;
       var regexp = new RegExp(`${input}`)
-      primeNumbers.findOne({ "key" : { $regex: regexp } },
-          function (err, data) {
-                 if (err) 
-                 res.send(err)
-                 res.json({length:data.length ,data:data})
+      primeNumbers.aggregate([
+        {"$match":{ "key" : { $regex: regexp } }},
+         {"$unwind":"$key"},
+         {"$match":{ "key" : { $regex: regexp } }}
+      ],
+     
+      function (err, data) {
+        if (err) 
+        res.send(err)
+        res.json({length:data.length ,data:data[0].key})
 
-   });
+})
+  //     primeNumbers.findOne({ "key" : { $regex: regexp } },
+  //         function (err, data) {
+  //                if (err) 
+  //                res.send(err)
+  //                res.json({length:data.length ,data:data})
+
+  //  });
    console.log(input)
    })
 

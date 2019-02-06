@@ -27,7 +27,7 @@ class App extends Component {
     .then(data => data.json())
       .then(res =>
          this.setState({
-        searchResult : res.data.key.toString()
+        searchResult : res.data
       })
       );}
 
