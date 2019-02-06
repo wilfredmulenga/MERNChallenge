@@ -7,18 +7,26 @@ class App extends Component {
     this.textInput = React.createRef();
     this.state={
       value:'',
-      error : ''
+      error : '',
+      data : ''
     }
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.getData = this.getData.bind(this)
+    this.getData()
   }
 
-  componentDidMount(){
-    
+  getData=()=>{
+    console.log('getting data')
+    fetch("http://localhost:5000/")
+    .then(data => data.json())
+      .then(res => this.setState({
+        data: res.data
+      }));
   }
 
   handleInputChange = (e)=>{
    let input= e.target.value
-   var inpuLetters = /[a-zA-Z]+/;
+   var inputLetters = /[a-zA-Z]+/;
    let inputSpecialCharacters = /\W/;
    let inputNumbers = /\d+/
     if(input.length>3 && inputNumbers.test(input)){
@@ -26,7 +34,7 @@ class App extends Component {
      this.setState({
        error: 'max number is of digits is 3'
      })
-    }else if(inpuLetters.test(input)){
+    }else if(inputLetters.test(input)){
       this.setState({
         error: 'sorry, letters are not allowed. Please input numbers only'
       })
@@ -61,7 +69,7 @@ class App extends Component {
        <div style={{marginTop:30}}>
        <button>Search</button>
        </div>
-        
+        {(this.state.data!=='')?<p>{this.state.data}</p>:null}
         </div>
       </div>
     );

@@ -4,22 +4,40 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers')
+res.setHeader('Cache-Control', 'no-cache');
+ next();
+})
+
+
 const fs = require('fs');
 var mongoose = require('mongoose');
-var assert = require('assert')
-mongoose.connect('mongodb://localhost/test',{ useNewUrlParser: true });
+  var assert = require('assert')
+  mongoose.connect('mongodb://localhost/test',{ useNewUrlParser: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
   console.log('connected')
+ 
 });
 var pmSchema = new mongoose.Schema({
     key: [String]
   });
-  var primeNumbers = mongoose.model('primeNumbers', pmSchema);
-  
- 
+  var primeNumbers = mongoose.model('primeNumbers', pmSchema);  
+   app.get('/',(req,res)=>{
+    primeNumbers.find({}, function(err, data){
+   if(err)
+    res.send(err)
+    res.json(data)
+})
+   })
+
 // fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
 //     if(err) throw err;
 //     let obj = [];
@@ -29,7 +47,7 @@ var pmSchema = new mongoose.Schema({
 //         obj.push({[splitline[0]] : splitline[1].split(' ',11).slice(1)});
 //     }
 //     console.log(obj);
-//     insert prime numbers into collection
+//     //insert prime numbers into collection
 //     primeNumbers.collection.insertMany(obj)
 // });
 
