@@ -32,7 +32,6 @@ class App extends Component {
       );}
 
   getData=()=>{
-    console.log('getting data')
     fetch("http://localhost:5000/")
     .then(data => data.json())
   }
@@ -56,7 +55,7 @@ class App extends Component {
         error: 'sorry, special characters are not allowed. Please input numbers only'
       })
     }else{
-      this.textInput.current.style.backgroundColor = null 
+     // this.textInput.current.style.backgroundColor = null 
       this.setState({
         input : input,
         error : ''
@@ -75,7 +74,7 @@ class App extends Component {
             <div>
           <p>{this.state.input}</p>
           </div>
-        <input id='numbers' style={{width:100}}  onChange={this.handleInputChange} value={this.state.input} required
+        <input id='numbers' style={{width:100}}  onChange={this.handleInputChange} value={this.state.input} required name='numbers'
          pattern="^[0-9]+$" min='000' max='999'  ref={this.textInput}
         ></input>
         <p>{this.state.error}</p>
