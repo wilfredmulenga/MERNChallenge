@@ -9,7 +9,8 @@ class App extends Component {
       input:'',
       error : '',
       data : '',
-      searchResult: []
+      searchValue: '',
+      searchResult: ''
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getData = this.getData.bind(this)
@@ -23,11 +24,23 @@ class App extends Component {
   }
 
   handleSubmit = ()=>{
+
     fetch(`http://localhost:5000/search/?input=${this.state.input}`)
     .then(data => data.json())
       .then(res =>
-         this.setState({
-        searchResult : res.data
+         {
+          this.setState({
+            searchResult : res.data
+          })
+          return res.data
+         }
+      ).then( primeNumber=>
+        fetch(`http://localhost:5000/searchResults`,{
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+        },
+          body:JSON.stringify({"input":this.state.input,"primeNumber":primeNumber})
       })
       );}
 
@@ -82,7 +95,12 @@ class App extends Component {
        <button onClick={this.handleSubmit}>Search</button>
        </div>
         {(this.state.searchResult!=='')?<p>Search Results: {this.state.searchResult}</p>:null}
+        <div className='searchResults text-center' style={{marginTop:50}}>
+            <h5>Search Results</h5>
+
         </div>
+        </div>
+        
       </div>
     );
   }
