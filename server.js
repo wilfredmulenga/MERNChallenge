@@ -39,13 +39,20 @@ var pmSchema = new mongoose.Schema({
   );
   var primeNumbers = mongoose.model('primeNumbers', pmSchema);  
   var searchResults = mongoose.model('searchResults', searchResultsSchema);  
-   app.get('/',(req,res)=>{
-    primeNumbers.find({}, function(err, data){
-   if(err)
-    console.log(err)
-    res.json({datatype: typeof data,data:data})
+//    app.get('/',(req,res)=>{
+//     primeNumbers.find({}, function(err, data){
+//    if(err)
+//     console.log(err)
+//     res.json({datatype: typeof data,data:data})
+// })
+//    })
+app.get('/searchResults',(req,res)=>{
+  searchResults.find({}, function(err, data){
+ if(err)
+  console.log(err)
+  res.json({datatype: typeof data,data:data})
 })
-   })
+ })
 
    app.get('/search',(req,res)=>{
       let input = req.query.input;
@@ -64,7 +71,7 @@ var pmSchema = new mongoose.Schema({
 })
    })
 
-   app.post('/searchResults',(req,res)=>{
+   app.post('/addToSearchResults',(req,res)=>{
     let input = req.body.input
     let primeNumber = req.body.primeNumber
     console.log(input,primeNumber)
@@ -75,6 +82,8 @@ var pmSchema = new mongoose.Schema({
       console.log(data)
     })
   })
+
+ 
 
 // fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
 //     if(err) throw err;

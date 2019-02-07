@@ -10,7 +10,7 @@ class App extends Component {
       error : '',
       data : '',
       searchValue: '',
-      searchResult: ''
+      searchResults: ''
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getData = this.getData.bind(this)
@@ -29,13 +29,11 @@ class App extends Component {
     .then(data => data.json())
       .then(res =>
          {
-          this.setState({
-            searchResult : res.data
-          })
+         
           return res.data
          }
       ).then( primeNumber=>
-        fetch(`http://localhost:5000/searchResults`,{
+        fetch(`http://localhost:5000/addToSearchResults`,{
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -43,10 +41,15 @@ class App extends Component {
           body:JSON.stringify({"input":this.state.input,"primeNumber":primeNumber})
       })
       );}
-
-  getData=()=>{
-    fetch("http://localhost:5000/")
-    .then(data => data.json())
+      //try use async await
+  getData=  ()=>{
+     fetch("http://localhost:5000/searchResults")
+    .then(res => res.json())
+    .then(res=> //console.log(Object.values(res.data))
+      this.setState({
+        searchResults : Object.values(res.data)
+    })
+    )
   }
 
   handleInputChange = (e)=>{
@@ -94,10 +97,28 @@ class App extends Component {
        <div style={{marginTop:30}}>
        <button onClick={this.handleSubmit}>Search</button>
        </div>
-        {(this.state.searchResult!=='')?<p>Search Results: {this.state.searchResult}</p>:null}
+       
         <div className='searchResults text-center' style={{marginTop:50}}>
-            <h5>Search Results</h5>
-
+         
+            <table>
+    <thead>
+        <tr>
+            <th colSpan="1">Input Data</th>
+            <th colSpan="1">Search Results</th>
+            <th colSpan="1">Date of Search</th>
+        </tr>
+    </thead>
+    <tbody>
+    {(this.state.searchResults)? this.state.searchResults.map((element,i)=>
+    <tr key={i}>
+    <td>{element.input}</td>
+    <td>{element.primeNumber}</td>
+    <td>{element.createdAt}</td>
+</tr>
+    )
+    :<tr>No Search Results</tr>}
+    </tbody>
+</table>
         </div>
         </div>
         
