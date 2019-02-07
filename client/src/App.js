@@ -58,20 +58,22 @@ class App extends Component {
    let inputSpecialCharacters = /\W/;
    let inputNumbers = /\d+/
     if(input.length>3 && inputNumbers.test(input)){
-     this.textInput.current.style.backgroundColor = 'red'
+    //  this.textInput.current.style.backgroundColor = 'red'
      this.setState({
        error: 'max number is of digits is 3'
      })
     }else if(inputLetters.test(input)){
+      this.textInput.current.style.backgroundColor = 'red'
       this.setState({
         error: 'sorry, letters are not allowed. Please input numbers only'
       })
     }else if(inputSpecialCharacters.test(input)){
+      this.textInput.current.style.backgroundColor = 'red'
       this.setState({
         error: 'sorry, special characters are not allowed. Please input numbers only'
       })
     }else{
-     // this.textInput.current.style.backgroundColor = null 
+     this.textInput.current.style.backgroundColor = null 
       this.setState({
         input : input,
         error : ''
@@ -82,23 +84,23 @@ class App extends Component {
  
   render() {
     return (
-      <div className='text-center'>
-      <div className='searchField' style={{
-              position: 'absolute', bottom: 0, width: '100%', height: '90%',
-              textAlign: 'center', padding: 10
-            }}>
+      <div className='App'>
+       <div style={{height:'1rem'}}><p>{this.state.error}</p></div>
+      <div className='searchField'>
             <div>
           <p>{this.state.input}</p>
           </div>
-        <input id='numbers' style={{width:100}}  onChange={this.handleInputChange} value={this.state.input} required name='numbers'
-         pattern="^[0-9]+$" min='000' max='999'  ref={this.textInput}
+        <input id='numbers'   onChange={this.handleInputChange} value={this.state.input} required name='numbers'
+         pattern="^[0-9]+$" 
+        //  min='000' max='999' 
+          ref={this.textInput}
         ></input>
-        <p>{this.state.error}</p>
+       
        <div style={{marginTop:30}}>
        <button onClick={this.handleSubmit}>Search</button>
        </div>
-       
-        <div className='searchResults text-center' style={{marginTop:50}}>
+    </div>
+         <div className='searchResults text-center' style={{marginTop:50}}>
          
             <table>
     <thead>
@@ -120,8 +122,6 @@ class App extends Component {
     </tbody>
 </table>
         </div>
-        </div>
-        
       </div>
     );
   }

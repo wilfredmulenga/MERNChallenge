@@ -47,13 +47,12 @@ var pmSchema = new mongoose.Schema({
 // })
 //    })
 app.get('/searchResults',(req,res)=>{
-  searchResults.find({}, function(err, data){
- if(err)
-  console.log(err)
-  res.json({datatype: typeof data,data:data})
+  searchResults.find({}).sort({createdAt:'descending'}).exec(function(err,data){
+      if(err)
+      res.send(err)
+      res.send({data:data})
+  })
 })
- })
-
    app.get('/search',(req,res)=>{
       let input = req.query.input;
       let regexp = new RegExp(`${input}`)
