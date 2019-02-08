@@ -22,11 +22,9 @@ class App extends Component {
   componentDidMount(){
     this.getData()
   }
-  componentDidUpdate(){
-    console.log('update')
-  }
+  
 
-  handleSubmit = ()=>{
+  handleSubmit = async ()=>{
     let lengthOfInput = this.state.input.length
     switch(lengthOfInput){
       case 0 :
@@ -45,34 +43,31 @@ class App extends Component {
         })
         break
         case 3:
-        fetch(`http://localhost:5000/search/?input=${this.state.input}`)
-        .then(data => data.json())
-          .then(res =>
-             {
-             
-              return res.data
-             }
-          ).then( primeNumber=>{
-            if(primeNumber.length>0){
-              fetch(`http://localhost:5000/addToSearchResults`,{
-              method: 'POST',
-              headers: {
-                "Content-Type": "application/json",
-            },
-              body:JSON.stringify({"input":this.state.input,"primeNumber":primeNumber})
-          })
-          this.setState({
-            prompt: "Your prime number is: '" +primeNumber+ "'"
-          })
-          this.getData()
-          //Incase there is no match found
+       try{
+         const data = await fetch(`http://localhost:5000/search/?input=${this.state.input}`)
+        const res = await data.json()
+        await fetch(`http://localhost:5000/addToSearchResults`,{
+                 method: 'POST',
+                 headers: {
+                   "Content-Type": "application/json",
+               },
+                 body:JSON.stringify({"input":this.state.input,"primeNumber":res.data})
+             })
+            
+            await this.getData()
+            if(res.data.length !==0){
+              this.setState({
+                prompt: "Your prime number is: '" +res.data+ "'"
+              })
             }else{
               this.setState({
                 prompt: "No Prime Number found"
               })
             }
-        }
-          );
+      
+        }catch(err){
+           console.log(err)
+         }
         break
       default :
       this.setState({
@@ -83,15 +78,18 @@ class App extends Component {
     
     }
       //try use async await
-  getData=  ()=>{
-     fetch("http://localhost:5000/searchResults")
-    .then(res => res.json())
-    .then(res=> //console.log(Object.values(res.data))
-      this.setState({
-        searchResults : Object.values(res.data)
-    })
-    )
-    console.log("get data")
+  getData=  async ()=>{
+    try{ 
+     const data =  await fetch("http://localhost:5000/searchResults")
+     const res = await data.json()
+     this.setState({
+       searchResults:Object.values(res.data)
+     })
+     console.log(Object.values(res.data))
+    }catch(err){
+      console.log(err)
+    }
+     
   }
 
   handleInputChange = (e)=>{
@@ -100,17 +98,17 @@ class App extends Component {
    let inputSpecialCharacters = /\W/;
    let inputNumbers = /\d+/
     if(input.length>3 && inputNumbers.test(input)){
-    //  this.textInput.current.style.backgroundColor = 'red'
+      this.textInput.current.style.backgroundColor = '#FFCCCC'
      this.setState({
        prompt: 'max number is of digits is 3'
      })
     }else if(inputLetters.test(input)){
-      this.textInput.current.style.backgroundColor = 'red'
+      this.textInput.current.style.backgroundColor = '#FFCCCC'
       this.setState({
         prompt: 'sorry, letters are not allowed. Please input numbers only'
       })
     }else if(inputSpecialCharacters.test(input)){
-      this.textInput.current.style.backgroundColor = 'red'
+      this.textInput.current.style.backgroundColor = '#FFCCCC'
       this.setState({
         prompt: 'sorry, special characters are not allowed. Please input numbers only'
       })
@@ -127,11 +125,8 @@ class App extends Component {
   render() {
     return (
       <div className='App'>
-       <div style={{height:'1rem',marginBottom:'2rem'}}><p>{this.state.prompt}</p></div>
+       <div style={{height:'1rem',marginBottom:'2rem'}}><p className='heading'>{this.state.prompt}</p></div>
       <div className='searchField'>
-            <div>
-          
-          </div>
         <input id='numbers'   onChange={this.handleInputChange} value={this.state.input} required name='numbers' placeholder='type in three digits'
           ref={this.textInput}
         ></input>
@@ -141,23 +136,21 @@ class App extends Component {
        </div>
     </div>
         <div style={{textAlign:'center'}}>
-         <div className='searchResults' style={{marginTop:50}}>
-         
+        <p className='heading'>Results</p>
+         <div className='searchResults' >
+         {(this.state.searchResults)?
             <table>
     <thead>
         <tr>
+            <th colSpan="1">Date of Search</th>
             <th colSpan="1">Search</th>
             <th colSpan="1">Prime Number</th>
-            <th colSpan="1">Date of Search</th>
         </tr>
     </thead>
-    <tbody>
-    {(this.state.searchResults)? this.state.searchResults.map((element,i)=>
-    <tr key={i}><td>{element.input}</td><td>{element.primeNumber}</td><td>{element.createdAt.substring(0, 10)}</td></tr>
-    )
-    :<tr>No Search Results</tr>}
-    </tbody>
-</table>
+    
+     {this.state.searchResults.map((element,i)=><tbody key={i}>
+    <tr><td>{element.createdAt.substring(0, 10)}</td><td>{element.input}</td><td>{element.primeNumber}</td></tr>
+     </tbody>)}</table>:<p style={{color:'grey'}}>No Search Results</p>}
         </div>
         </div>
       </div>

@@ -51,6 +51,7 @@ app.get('/searchResults',(req,res)=>{
       if(err)
       res.send(err)
       res.send({data:data})
+      //console.log(data)
   })
 })
    app.get('/search',(req,res)=>{
@@ -73,12 +74,11 @@ app.get('/searchResults',(req,res)=>{
    app.post('/addToSearchResults',(req,res)=>{
     let input = req.body.input
     let primeNumber = req.body.primeNumber
-    console.log(input,primeNumber)
     let doc =  {'input':input,'primeNumber':primeNumber}
     searchResults.create(doc,function(err,data){
       if(err)
       res.send(err)
-      console.log(data)
+      res.send(data)
     })
   })
 
