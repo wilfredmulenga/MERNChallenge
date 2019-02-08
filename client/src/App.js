@@ -8,7 +8,7 @@ class App extends Component {
     this.state={
       input:'',
       prompt : 'Welcome',
-      searchResults: ''
+      searchResults: []
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getData = this.getData.bind(this)
@@ -41,9 +41,11 @@ class App extends Component {
         })
         break
         case 3:
+        //search for prime number that matches input
        try{
          const data = await fetch(`http://localhost:5000/search/?input=${this.state.input}`)
         const res = await data.json()
+        //then add the input and prime number to the database
         await fetch(`http://localhost:5000/addToSearchResults`,{
                  method: 'POST',
                  headers: {
@@ -51,7 +53,7 @@ class App extends Component {
                },
                  body:JSON.stringify({"input":this.state.input,"primeNumber":res.data})
              })
-            
+            //then get the list of search results
             await this.getData()
             if(res.data.length !==0){
               this.setState({
@@ -111,21 +113,22 @@ class App extends Component {
         prompt: 'sorry, special characters are not allowed. Please input numbers only'
       })
     }else{
-     this.textInput.current.style.backgroundColor = null 
+      this.textInput.current.style.backgroundColor = null
       this.setState({
         input : input,
         prompt : ''
       })
     }
-    
+   
   }
  
   render() {
     return (
       <div className='App'>
-       <div style={{height:'1rem',marginBottom:'2rem'}}><p className='heading'>{this.state.prompt}</p></div>
+       <div className='headerDiv'><p className='heading'>{this.state.prompt}</p></div>
       <div className='searchField'>
-        <input id='numbers'   onChange={this.handleInputChange} value={this.state.input} required name='numbers' placeholder='type in three digits'
+      <label>type in three digits</label>
+        <input id='numbers'   onChange={this.handleInputChange} value={this.state.input} required name='numbers'
           ref={this.textInput}
         ></input>
        
@@ -133,10 +136,10 @@ class App extends Component {
        <span className='button' onClick={this.handleSubmit}>Search</span>
        </div>
     </div>
-        <div style={{textAlign:'center'}}>
+        <div>
         <p className='heading'>Results</p>
          <div className='searchResults' >
-         {(this.state.searchResults)?
+         {(this.state.searchResults.length!==0)?
             <table>
     <thead>
         <tr>
@@ -147,7 +150,7 @@ class App extends Component {
     </thead>
      {this.state.searchResults.map((element,i)=><tbody key={i}>
     <tr><td>{element.createdAt.substring(0, 10)}</td><td>{element.input}</td><td>{element.primeNumber}</td></tr>
-     </tbody>)}</table>:<p style={{color:'grey'}}>No Search Results</p>}
+     </tbody>)}</table>:<p className='greyText'>No Search Results</p>}
         </div>
         </div>
       </div>

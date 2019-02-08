@@ -7,26 +7,34 @@
   min-height: 100vh;
  
 }
+
+@mixin PoiretOneBold(){
+  font-family: 'Poiret One';
+  font-weight: bold ;
+}
 .heading{
   font-size: 24px;
   font-family: 'Poiret One';
   font-weight: bold ;
+  @include PoiretOneBold()
 }
 
 input {
-  width:10rem;
   height:1.8rem;
+  border: 1px solid #4B6FC1;
+  display: inline-block;
 }
-
+label{
+  margin-right:10px;
+  @include PoiretOneBold()
+}
 @mixin cardBoxShadow(){
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 .searchField{
   margin-top: 2rem;
-  width: 300px;
   height:150px;
   display: inline-block;
- 
  position: relative; 
 }
 .searchResults{
@@ -46,7 +54,6 @@ input {
   background-color: #4B6FC1;
   cursor: pointer;
   box-shadow: 0 5px #2C4889;
-
   // Add code for when the cursor is over elements with the .button class
   &:hover {
       opacity : 1;
@@ -56,4 +63,12 @@ input {
 top: 7px;
 box-shadow: none;
   }
+}
+
+.greyText{
+  color:grey
+}
+
+.headerDiv{
+  height: 2rem;
 }

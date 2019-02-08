@@ -1,9 +1,10 @@
 {
   "name": "mernchallenge",
   "version": "1.0.0",
-  "description": "creating a project that uses MERN(Mongo Express React and Node)",
+  "description": "creating a project that uses MERN(MongoDB Express React and Node.js)",
   "scripts": {
     "client": "cd client && yarn start",
+    "test": "cd client && yarn test",
     "server": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
   },

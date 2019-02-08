@@ -4,7 +4,6 @@ Web App using React, Node, Express and MongoDB
 ## Steps To Run The Web App
 
 clone the repository
-
 `git clone`
 
 install the dependencies
@@ -21,6 +20,9 @@ If you do not have MongoDB, please follow the link
 open a terminal and run Mongo Daemon and leave it running
 `mongod`
 
-then in the project folder
+to run the app in development mode
 `yarn dev`
+the project should open at [http://localhost:3000](http://localhost:3000)
 
+to run test
+`yarn test`
