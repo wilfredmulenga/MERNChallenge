@@ -8,22 +8,20 @@ class App extends Component {
     this.state={
       input:'',
       prompt : 'Welcome',
-      data : '',
-      searchValue: '',
       searchResults: ''
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getData = this.getData.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-   
+    this.handleSubmit = this.handleSubmit.bind(this) 
   }
 
 
-  componentDidMount(){
-    this.getData()
+  async componentDidMount(){
+    await this.getData()
   }
   
-
+//makes post request to save input data and search result to database 
+// then gets list of search results
   handleSubmit = async ()=>{
     let lengthOfInput = this.state.input.length
     switch(lengthOfInput){
@@ -77,7 +75,8 @@ class App extends Component {
    
     
     }
-      //try use async await
+     
+  //get list of search results from database
   getData=  async ()=>{
     try{ 
      const data =  await fetch("http://localhost:5000/searchResults")
@@ -85,7 +84,6 @@ class App extends Component {
      this.setState({
        searchResults:Object.values(res.data)
      })
-     console.log(Object.values(res.data))
     }catch(err){
       console.log(err)
     }
@@ -147,7 +145,6 @@ class App extends Component {
             <th colSpan="1">Prime Number</th>
         </tr>
     </thead>
-    
      {this.state.searchResults.map((element,i)=><tbody key={i}>
     <tr><td>{element.createdAt.substring(0, 10)}</td><td>{element.input}</td><td>{element.primeNumber}</td></tr>
      </tbody>)}</table>:<p style={{color:'grey'}}>No Search Results</p>}

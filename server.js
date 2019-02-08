@@ -16,14 +16,11 @@ res.setHeader('Cache-Control', 'no-cache');
 
 const fs = require('fs');
 var mongoose = require('mongoose');
-  var assert = require('assert')
-  mongoose.connect('mongodb://localhost/test',{ useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/test',{ useNewUrlParser: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  // we're connected!
   console.log('connected')
- 
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -39,21 +36,38 @@ var pmSchema = new mongoose.Schema({
   );
   var primeNumbers = mongoose.model('primeNumbers', pmSchema);  
   var searchResults = mongoose.model('searchResults', searchResultsSchema);  
-//    app.get('/',(req,res)=>{
-//     primeNumbers.find({}, function(err, data){
-//    if(err)
-//     console.log(err)
-//     res.json({datatype: typeof data,data:data})
-// })
-//    })
+
+//retrieve array of prime numbers and push them to "obj"
+fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
+  if(err) throw err;
+  let obj = [];
+  let splitted = data.toString().split("\n");
+  for (let i = 0; i<splitted.length-2; i++) {
+     let splitline = splitted[i].split(':')
+      obj.push({ "key" : splitline[1].split(' ',11).slice(1)});
+  }
+  
+  //if primenumbers collection is empty, insert "obj"
+  primeNumbers.countDocuments({},function(err,data){
+    if(err)
+    console.log(err)
+    if(data===0){
+      primeNumbers.collection.insertMany(obj)
+      console.log(data)
+    }
+  })
+});
+
+//get list of search results from searchresults collection
 app.get('/searchResults',(req,res)=>{
   searchResults.find({}).sort({createdAt:'descending'}).exec(function(err,data){
       if(err)
       res.send(err)
       res.send({data:data})
-      //console.log(data)
   })
 })
+
+//look for matching prime numbers, and outputs a document with only matched prime numbers
    app.get('/search',(req,res)=>{
       let input = req.query.input;
       let regexp = new RegExp(`${input}`)
@@ -62,15 +76,16 @@ app.get('/searchResults',(req,res)=>{
          {"$unwind":"$key"},
          {"$match":{ "key" : { $regex: regexp } }}
       ],
-     
       function (err, data) {
         if (err) 
         console.log(err)
+        //get the first document
         res.json({length:data.length ,data:data[0].key})
 
 })
    })
 
+   //add input data and search result to searchresults collection
    app.post('/addToSearchResults',(req,res)=>{
     let input = req.body.input
     let primeNumber = req.body.primeNumber
@@ -81,26 +96,5 @@ app.get('/searchResults',(req,res)=>{
       res.send(data)
     })
   })
-
- 
-
-// fs.readFile('./primes10000.txt', 'utf8', function(err,data) {
-//     if(err) throw err;
-//     let obj = [];
-//     let splitted = data.toString().split("\n");
-//     for (let i = 0; i<splitted.length-2; i++) {
-//        let splitline = splitted[i].split(':')
-//         obj.push({ "key" : splitline[1].split(' ',11).slice(1)});
-//     }
-//     console.log(obj);
-//     //insert prime numbers into collection
-//     primeNumbers.collection.insertMany(obj)
-// });
-
-   //primeNumbers is the collection
-//    primeNumbers.find(function (err, pm) {
-//     if (err) return console.error(err);
-//     console.log(pm);
-//   })
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
